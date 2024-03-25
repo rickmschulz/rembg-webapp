@@ -4,7 +4,8 @@ if (Test-Path $virtualenv -PathType Leaf) {
 }
 
 # Open the browser with the URL
-Start-Process "http://192.168.0.118:5100"
+$url = "http://127.0.0.1:5100"
+Start-Process $url
 
 # Start the Python script
 python .\app.py

@@ -1,80 +1,132 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>✂️ rmbg</title>
-    <style>
-      body {
-        height: 100vh;
-        display: flex;
 
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-      }
+<head>
+  <title>✂️ Remove Background Image</title>
+  <style>
+    body {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 1.2em;
+    }
 
-      .drop-zone {
-        border: 2px dashed #ccc;
-        padding: 20px;
-        width: 80vw;
-        height: 80vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-      }
+    ul {
+      margin-block-start: 0em;
+    }
 
-      .drop-zone.dragover {
-        background-color: #f0f0f0;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="dropZone" class="drop-zone">
-      <h1>rmbg</h1>
-      <form
-        id="uploadForm"
-        action="/"
-        method="post"
-        enctype="multipart/form-data"
-      >
-        <input id="fileInput" type="file" name="file" />
-        <input type="submit" value="rm" />
-      </form>
-    </div>
+    .drop-zone {
+      border: 2px dashed #ccc;
+      padding: 10px;
+      width: 80vw;
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
 
-    <script>
-      let dropZone = document.getElementById("dropZone");
-      let fileInput = document.getElementById("fileInput");
-      let uploadForm = document.getElementById("uploadForm");
+    .drop-zone.dragover {
+      background-color: #f0f0f0;
+    }
 
-      dropZone.addEventListener("click", function () {
+
+    input {
+      /* padding: 20px; */
+      padding-left: 140px;
+      font-size: 22px;
+      margin-top: 1em;
+    }
+
+    /* Style for the button */
+    button {
+      padding: 12px;
+      font-size: 16px;
+      margin-top: 60px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="dropZone" class="drop-zone">
+    <h2>Remove Background Image</h2>
+    <ul>
+      <li>Click anywhere</li>
+      <li>Drag the file</li>
+    </ul>
+    <form id="uploadForm" action="/" method="post" enctype="multipart/form-data">
+      <input id="fileInput" type="file" name="file" />
+      <!-- <input type="submit" value="rm" /> -->
+
+    </form>
+
+    <button id="closeAppButton">Close the App</button>
+
+  </div>
+
+  <script>
+    let dropZone = document.getElementById("dropZone");
+    let fileInput = document.getElementById("fileInput");
+    let uploadForm = document.getElementById("uploadForm");
+    let closeAppButton = document.getElementById("closeAppButton");
+
+    dropZone.addEventListener("click", function () {
+      // Check if the target of the click event is the file input
+      if (event.target !== fileInput && event.target !== closeAppButton) {
         fileInput.click();
-      });
+      }
+    });
 
-      fileInput.addEventListener("change", function () {
-        if (fileInput.files.length > 0) {
-          uploadForm.submit();
-        }
-      });
-
-      dropZone.addEventListener("dragover", function (e) {
-        this.classList.add("dragover");
-      });
-
-      dropZone.addEventListener("dragleave", function (e) {
-        this.classList.remove("dragover");
-      });
-
-      dropZone.addEventListener("drop", function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        this.classList.remove("dragover");
-
-        let file = e.dataTransfer.files[0];
-        fileInput.files = e.dataTransfer.files;
+    fileInput.addEventListener("change", function () {
+      if (fileInput.files.length > 0) {
         uploadForm.submit();
-      });
-    </script>
-  </body>
+        document.getElementById("downloadMessage").style.display = "block";
+      }
+    });
+
+    dropZone.addEventListener("dragover", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.classList.add("dragover");
+    });
+
+    dropZone.addEventListener("dragleave", function (e) {
+      this.classList.remove("dragover");
+    });
+
+    dropZone.addEventListener("drop", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.classList.remove("dragover");
+
+      let file = e.dataTransfer.files[0];
+      fileInput.files = e.dataTransfer.files;
+      uploadForm.submit();
+    });
+
+    // Add event listener to the "Close the App" button
+    closeAppButton.addEventListener("click", function () {
+      fetch("/shutdown_server", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then(() => {
+          // After the POST request is sent, close the tab
+          window.close();
+        })
+        .catch(error => {
+          console.error("Error shutting down the server:", error);
+          // Handle error if needed
+        });
+    });
+
+
+  </script>
+</body>
+
 </html>

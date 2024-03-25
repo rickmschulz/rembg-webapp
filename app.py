@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, send_file
 from rembg import remove
 from PIL import Image
 from io import BytesIO
+from os import _exit
 
 app = Flask(__name__)
 
@@ -25,9 +26,14 @@ def upload_file():
                 img_io,
                 mimetype="image/png",
                 as_attachment=True,
-                download_name="_rmbg.png",
+                download_name=file.filename + "_rmbg.png",
             )
     return render_template("index.html")
+
+
+@app.route("/shutdown_server", methods=["POST"])
+def shutdown_server():
+    return _exit(0)
 
 
 if __name__ == "__main__":
