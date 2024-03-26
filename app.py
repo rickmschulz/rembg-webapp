@@ -26,7 +26,7 @@ def upload_file():
                 img_io,
                 mimetype="image/png",
                 as_attachment=True,
-                download_name=file.filename + "_rmbg.png",
+                download_name=file.filename.split(".")[0] + "_rmbg.png",
             )
     return render_template("index.html")
 
