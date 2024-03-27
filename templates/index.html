@@ -63,15 +63,12 @@
 
     </form>
 
-    <button id="closeAppButton">Close the App</button>
-
   </div>
 
   <script>
     let dropZone = document.getElementById("dropZone");
     let fileInput = document.getElementById("fileInput");
     let uploadForm = document.getElementById("uploadForm");
-    let closeAppButton = document.getElementById("closeAppButton");
 
     dropZone.addEventListener("click", function () {
       // Check if the target of the click event is the file input
@@ -106,25 +103,6 @@
       fileInput.files = e.dataTransfer.files;
       uploadForm.submit();
     });
-
-    // Add event listener to the "Close the App" button
-    closeAppButton.addEventListener("click", function () {
-      fetch("/shutdown_server", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then(() => {
-          // After the POST request is sent, close the tab
-          window.close();
-        })
-        .catch(error => {
-          console.error("Error shutting down the server:", error);
-          // Handle error if needed
-        });
-    });
-
 
   </script>
 </body>
